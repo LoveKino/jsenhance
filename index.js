@@ -44,9 +44,86 @@ let getValue = (obj, key) => obj[key];
 
 let invertLogic = v => !v;
 
+let set = (sandbox, name = '', value) => {
+    name = name.trim();
+    let parts = !name ? [] : name.split('.');
+    let parent = sandbox;
+    if (!isObject(parent)) return;
+    if (!parts.length) return;
+    for (let i = 0; i < parts.length - 1; i++) {
+        let part = parts[i];
+        parent = parent[part];
+        // avoid exception
+        if (!isObject(parent)) return null;
+    }
+
+    parent[parts[parts.length - 1]] = value;
+    return true;
+};
+
+/**
+ * provide property:
+ *
+ * 1. read props freely
+ *
+ * 2. change props by provide token
+ */
+
+let authProp = (token) => {
+    let set = (obj, key, value) => {
+        let temp = null;
+
+        if (!hasOwnProperty(obj, key)) {
+            defineProperty(obj, key, {
+                enumerable: false,
+                configurable: false,
+                set: (value) => {
+                    if (isObject(value)) {
+                        if (value.token === token) {
+                            // save
+                            temp = value.value;
+                        }
+                    }
+                },
+                get: () => {
+                    return temp;
+                }
+            });
+        }
+
+        setProp(obj, key, value);
+    };
+
+    let setProp = (obj, key, value) => {
+        obj[key] = {
+            token,
+            value
+        };
+    };
+
+    return {
+        set
+    };
+};
+
+let evalCode = (code) => {
+    if (typeof code !== 'string') return code;
+    return eval(`(function(){
+    try {
+        return ${code}
+    } catch(err) {
+        console.log('Error happened, when eval code: ${code}');
+        throw err;
+    }
+})()`);
+};
+
 module.exports = {
     defineProperty,
     hasOwnProperty,
     toArray,
-    get
+    get,
+    set,
+    authProp,
+    evalCode
 };

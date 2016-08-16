@@ -26,7 +26,7 @@ let hasOwnProperty = (obj, key) => {
     return false;
 };
 
-let toArray = (v) => Array.prototype.slice.call(v);
+let toArray = (v = []) => Array.prototype.slice.call(v);
 
 /**
  * a.b.c

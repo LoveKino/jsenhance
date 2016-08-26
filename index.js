@@ -110,9 +110,9 @@ let evalCode = (code) => {
     if (typeof code !== 'string') return code;
     return eval(`(function(){
     try {
-        return ${code}
+        ${code}
     } catch(err) {
-        console.log('Error happened, when eval code: ${code}');
+        console.log('Error happened, when eval code.');
         throw err;
     }
 })()`);

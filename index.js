@@ -118,6 +118,10 @@ let evalCode = (code) => {
 })()`);
 };
 
+let delay = (time) => new Promise((resolve) => {
+    setTimeout(resolve, time);
+});
+
 module.exports = {
     defineProperty,
     hasOwnProperty,
@@ -125,5 +129,6 @@ module.exports = {
     get,
     set,
     authProp,
-    evalCode
+    evalCode,
+    delay
 };

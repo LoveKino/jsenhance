@@ -122,6 +122,17 @@ let delay = (time) => new Promise((resolve) => {
     setTimeout(resolve, time);
 });
 
+let runSequence = (list, params = [], context) => {
+    if (!list.length) {
+        return Promise.resolve();
+    }
+    let fun = list[0];
+    let v = fun && fun.apply(context, params);
+    return Promise.resolve(v).then(() => {
+        return runSequence(list.slice(1));
+    });
+};
+
 module.exports = {
     defineProperty,
     hasOwnProperty,
@@ -130,5 +141,6 @@ module.exports = {
     set,
     authProp,
     evalCode,
-    delay
+    delay,
+    runSequence
 };

@@ -122,14 +122,17 @@ let delay = (time) => new Promise((resolve) => {
     setTimeout(resolve, time);
 });
 
-let runSequence = (list, params = [], context) => {
+let runSequence = (list, params = [], context, stopV) => {
     if (!list.length) {
         return Promise.resolve();
     }
     let fun = list[0];
     let v = fun && fun.apply(context, params);
+    if (stopV && v === stopV) {
+        return Promise.resolve(stopV);
+    }
     return Promise.resolve(v).then(() => {
-        return runSequence(list.slice(1));
+        return runSequence(list.slice(1), params, context, stopV);
     });
 };
 

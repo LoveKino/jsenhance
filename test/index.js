@@ -3,7 +3,7 @@
 let assert = require('assert');
 
 let {
-    get
+    get, runSequence
 } = require('../index');
 
 describe('index', () => {
@@ -31,5 +31,14 @@ describe('index', () => {
         assert.deepEqual(get({
             a: 1
         }, 'a.b.c'), null);
+    });
+
+    it('runSequence:error', (done) => {
+        runSequence([() => {
+            throw new Error('123');
+        }]).catch((err) => {
+            assert.equal(err.toString().indexOf('123') !== -1, true);
+            done();
+        });
     });
 });

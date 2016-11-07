@@ -127,13 +127,18 @@ let runSequence = (list, params = [], context, stopV) => {
         return Promise.resolve();
     }
     let fun = list[0];
-    let v = fun && fun.apply(context, params);
-    if (stopV && v === stopV) {
-        return Promise.resolve(stopV);
+    try {
+        let v = fun && fun.apply(context, params);
+
+        if (stopV && v === stopV) {
+            return Promise.resolve(stopV);
+        }
+        return Promise.resolve(v).then(() => {
+            return runSequence(list.slice(1), params, context, stopV);
+        });
+    } catch (err) {
+        return Promise.reject(err);
     }
-    return Promise.resolve(v).then(() => {
-        return runSequence(list.slice(1), params, context, stopV);
-    });
 };
 
 module.exports = {

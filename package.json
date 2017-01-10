@@ -1,6 +1,6 @@
 {
   "name": "jsenhance",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "some js api",
   "main": "index.js",
   "scripts": {

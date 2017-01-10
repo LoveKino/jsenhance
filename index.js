@@ -52,13 +52,16 @@ let set = (sandbox, name = '', value) => {
     if (!parts.length) return;
     for (let i = 0; i < parts.length - 1; i++) {
         let part = parts[i];
-        parent = parent[part];
-        // avoid exception
-        if (!isObject(parent)) return null;
+        let next = parent[part];
+        if (!isObject(next)) {
+            next = {};
+            parent[part] = next;
+        }
+        parent = next;
     }
 
     parent[parts[parts.length - 1]] = value;
-    return true;
+    return sandbox;
 };
 
 /**
